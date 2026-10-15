@@ -19,8 +19,6 @@ function AssemblyEndgame() {
     width: window.innerWidth,
     height: window.innerHeight
   })
-  
-  console.log(currentWord)
 
   // Derived Values
   const wrongGuessCount = guessedLetters.filter(guessedLetter => !currentWord.includes(guessedLetter)).length;
@@ -42,18 +40,18 @@ function AssemblyEndgame() {
 
   useEffect(() => {
     function handleResize() {
-        setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight
-        })
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
     }
 
-      window.addEventListener("resize", handleResize)
+    window.addEventListener("resize", handleResize)
 
-      return () => {
-          window.removeEventListener("resize", handleResize)
-      }
-    }, [])
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   function addGuessedLetter(letter) {
     setGuessedLetters(prevLetters =>
@@ -70,51 +68,53 @@ function AssemblyEndgame() {
   }
 
   return (
-    <main className="assembly flex-center flex-column-nowrap">
+    <>
       {isGameWon && <Confetti
+        className="confetti"
         width={windowSize.width}
         height={windowSize.height}
         recycle={false}
         numberOfPieces={1000}
       />}
+      <main className="assembly flex-center flex-column-nowrap">
+        <div className="assembly__intro ">
+          <Header />
 
-      <div className="assembly__intro ">
-        <Header />
+          <GameStatus
+            currentWord={currentWord}
+            guessedLetters={guessedLetters}
+            isGameOver={isGameOver}
+            isGameWon={isGameWon}
+            isGameLost={isGameLost}
+            wrongGuessCount={wrongGuessCount}
+            numGuessesLeft={numGuessesLeft}
+          />
+        </div>
 
-        <GameStatus
+        <LanguageChips wrongGuessCount={wrongGuessCount} />
+
+        <GuessWord
+          currentWord={currentWord}
+          isGameLost={isGameLost}
+          guessedLetters={guessedLetters}
+          currentWordLettersRef={currentWordLettersRef}
+          numGuessesLeft={numGuessesLeft}
+        />
+
+        <Keyboard
           currentWord={currentWord}
           guessedLetters={guessedLetters}
           isGameOver={isGameOver}
-          isGameWon={isGameWon}
-          isGameLost={isGameLost}
-          wrongGuessCount={wrongGuessCount}
-          numGuessesLeft={numGuessesLeft}
+          addGuessedLetter={addGuessedLetter}
         />
-      </div>
 
-      <LanguageChips wrongGuessCount={wrongGuessCount} />
-
-      <GuessWord
-        currentWord={currentWord}
-        isGameLost={isGameLost}
-        guessedLetters={guessedLetters}
-        currentWordLettersRef={currentWordLettersRef}
-        numGuessesLeft={numGuessesLeft}
-      />
-
-      <Keyboard
-        currentWord={currentWord}
-        guessedLetters={guessedLetters}
-        isGameOver={isGameOver}
-        addGuessedLetter={addGuessedLetter}
-      />
-
-      {isGameOver &&
-        <NewGameButton
-          newGameButtonRef={newGameButtonRef}
-          startNewGame={startNewGame}
-        />}
-    </main>
+        {isGameOver &&
+          <NewGameButton
+            newGameButtonRef={newGameButtonRef}
+            startNewGame={startNewGame}
+          />}
+      </main>
+    </>
   )
 }
 
